@@ -7,14 +7,14 @@ sources:
     schema: gz_raw_data
     description: donnée brut de Greenweez
     tables:
-      - name: raw_gz_sales
-        identifier: sales
+      - name: sales
+        identifier: raw_gz_sales
         description: données de ventes
 
-      - name: raw_gz_ship
-        identifier: ship
+      - name: ship
+        identifier: raw_gz_ship
         description: données de shipment
 
-      - name: raw_gz_products
-        identifier: products
+      - name: product
+        identifier: raw_gz_product  
         description: données sur les produits
