@@ -13,6 +13,10 @@ sources:
       - name: sales
         identifier: raw_gz_sales
         description: sales data/ one row per products_id found in each orders_id
+
+        tests:
+          - unique:
+              column_name: "(orders_id||'_'||pdt_id)"
         
         columns:
           - name: date_date
@@ -29,6 +33,7 @@ sources:
 
           - name: quantity
             description: number of products
+          
 
       - name: ship
         identifier: raw_gz_ship
@@ -51,7 +56,7 @@ sources:
           - name: ship_cost
             description: cout de livraison
       
-      - name: products
+      - name: product
         identifier: raw_gz_product
         description: products table, prix pour chaque products
 
