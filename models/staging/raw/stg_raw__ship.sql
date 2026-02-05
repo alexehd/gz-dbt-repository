@@ -13,7 +13,7 @@ with
      select
          orders_id,
          shipping_fee,
-         logCost,
+         logCost AS log_cost,
          CAST(ship_cost AS FLOAT64) AS ship_cost
 
      from source
