@@ -82,7 +82,7 @@ sources:
             description: prix d'achat
 
 models:
-  - name: stg_raw__saleq
+  - name: stg_raw__sales
     description: "Renommage de l'id des produits"
 
   - name: stg_raw__product
