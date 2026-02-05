@@ -1,20 +1,60 @@
-#schéma yml
+#schema yml
 version: 2
 
 
 sources:
   - name: raw
     schema: gz_raw_data
-    description: donnée brut de Greenweez
+    database: dbt-dataset-486410
+    loader: bigquery
+    description: Greenweez data/sales, shippment, products
+    
     tables:
       - name: sales
         identifier: raw_gz_sales
-        description: données de ventes
+        description: sales data/ one row per products_id found in each orders_id
+        
+        columns:
+          - name: date_date
+            description: date of purchase
+
+          - name: orders_id
+            description: unique for every order, repeat for every product in order
+
+          - name: products
+            description: unique for every product, several products for one order
+
+          - name: revenue
+            description: one for every products
+
+          - name: quantity
+            description: number of products
 
       - name: ship
         identifier: raw_gz_ship
-        description: données de shipment
+        description: shippment data/ship fee, log and ship cost by order
 
-      - name: product
-        identifier: raw_gz_product  
-        description: données sur les produits
+        columns:
+          - name: orders_id
+            description: unique 
+
+          - name: shipping_fee
+            description: Prix payé par le client pour la livraison
+
+          - name: logCost
+            description: cout de logistique
+
+          - name: ship_cost
+            description: cout de livraison
+      
+      - name: products
+        identifier: raw_gz_product
+        description: products table, prix pour chaque products
+
+        columns:
+          - name: products_id
+            description: identifiant produit
+
+          - name: purchase_price
+            description: prix d'achat
+
