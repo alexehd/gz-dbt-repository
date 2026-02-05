@@ -37,7 +37,11 @@ sources:
         columns:
           - name: orders_id
             description: unique 
-
+            tests:
+              - unique
+              - not_null          
+              
+              
           - name: shipping_fee
             description: Prix payé par le client pour la livraison
 
@@ -54,6 +58,10 @@ sources:
         columns:
           - name: products_id
             description: identifiant produit
+            tests:
+              - unique
+              - not_null
+              
 
           - name: purchase_price
             description: prix d'achat
