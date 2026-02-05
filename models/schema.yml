@@ -9,7 +9,15 @@ sources:
     loader: bigquery
     description: Greenweez data/sales, shippment, products
     
+    config: 
+      freshness:
+          warn_after:
+            count: 90
+            period: day
+      loaded_at_field: "date_date::timestamp" 
+
     tables:
+    #tables sales
       - name: sales
         identifier: raw_gz_sales
         description: sales data/ one row per products_id found in each orders_id
@@ -35,6 +43,7 @@ sources:
             description: number of products
           
 
+#table ship
       - name: ship
         identifier: raw_gz_ship
         description: shippment data/ship fee, log and ship cost by order
@@ -56,6 +65,7 @@ sources:
           - name: ship_cost
             description: cout de livraison
       
+  #table products
       - name: product
         identifier: raw_gz_product
         description: products table, prix pour chaque products
@@ -71,3 +81,84 @@ sources:
           - name: purchase_price
             description: prix d'achat
 
+models:
+  - name: stg_raw__saleq
+    description: "Renommage de l'id des produits"
+
+  - name: stg_raw__product
+    description: "Cast et renommage du prix des produits"
+
+
+
+  - name: stg_raw__ship
+    description: "Renommage des colonnes de coûts"
+
+
+#MODELES INTERMEDIAIRES
+  - name: int_sales_margin
+    description: "Calcul de la marge ligne à ligne (avec Sales et Product)."
+
+    columns:
+      - name: margin
+        description: "Revenue - Purchase Cost"
+
+      - name: purchase_cost
+        description: "Coût d'achat (quantité * prix d'achat)"
+
+
+
+  - name: int_orders_margin
+    description: "Agrégation de la marge au niveau de la commande (orders_id)"
+
+    columns:
+
+      - name: orders_id
+        tests:
+
+          - unique
+          - not_null
+
+      - name: margin
+        description: "Somme des marges de tous les produits de la commande"
+
+
+
+  - name: int_orders_operational
+    description: "Marge opérationnelle (marge - coûts logistiques)"
+
+    columns:
+      - name: orders_id
+        tests:
+
+          - unique
+          - not_null              
+
+      - name: operational_margin
+        description: "Marge + shipping fee - (log cost + ship cost)"
+
+#FINANCE DAY
+  - name: finance_days
+    description: "KPIs financiers agrégés par jour, table principale pour le dashboard financier"
+
+    columns:
+      - name: date_date
+        description: "Journée d'activité"
+
+        # C'est la table finale, il est capital de s'assurer de la qualité des données
+
+        tests:
+
+          - unique
+          - not_null
+
+
+      - name: nb_transactions
+        description: "Nombre de commandes uniques par jour"
+      
+
+      - name: average_basket
+        description: "Panier moyen (revenue / nb transactions)"
+
+
+      - name: operational_margin
+        description: "Marge opérationnelle totale journalière"
